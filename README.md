@@ -1,31 +1,54 @@
-# New Package for Stacked
+# Stacked Localisation Generator
 
-Created from the `package-template`.
+A code generator that generates all the keys in a language file to be used with the [stacked_localisation](https://github.com/FilledStacks/stacked/tree/master/packages/stacked_localisation/stacked_localisation) package.
 
-After creating the repository, proceed with the following instructions:
+## Setup
 
-- Update the repository settings to adhere to the conventions:
-  - General:
-    - No Wikis
-    - No Issues
-    - No Sponsorships
-    - Preserve this repository
-    - No Discussions
-    - No Projects
-    - Don't allow merge commits
-    - Allow squash merging with default commit message set to "Default to pull request title and commit details"
-    - Don't allow rebase merging
-    - Always suggest updating pull requests
-    - Allow auto-merge
-    - Automatically delete head branches
-  - Branch protection rule (`main`):
-    - Require a pull request before merging
-    - Dismiss stale pull request approvals when new commits are pushed
-    - Allow specified actors to bypass required pull requests -> `Dane Mackier` (or whoever is the current owner of the personal access token in the organization secrets `REPO_DEPLOYMENT_TOKEN`)
-    - Require status checks to pass before merging
-    - Require branches to be up to date before merging
-    - Add status check `Linting and Testing` (to select this, the workflow must have been run at least once. This can be done manually since the workflow has "workflow_dispatch" as a trigger)
-    - Require conversation resolution before merging
-    - Require linear history
-- Create the flutter package with `flutter create -t package --project-name NAME .`
-- Update the content in the `README` file.
+This package (and build_runner if you don't already have it) should be added as a dev dependency in the project you're using.
+
+```yaml
+dev_dependencies:
+  ...
+  build_runner:
+  stacked_localisation_generator:
+```
+
+Then create a new folder in root called assets with another folder inside it called lang. This folder will contain the language json or yaml files. Here's an example of a file called en.json
+
+```json
+{
+  "HomeView": {
+    "title": "This is my Home",
+    "subtitle": "I live in this Home"
+  }
+}
+```
+
+or for en.yaml
+
+```yaml
+HomeView:
+  title: This is my Home
+  subtitle: I live in this Home
+```
+
+When you run `flutter pub run build_runner build --delete-conflicting-outputs` the package will generate a new file called `localisation_string_keys.dart` that can be found at the root of the lib folder that contains type save keys for the language string definition above. The above will produce the following keys.
+
+```dart
+/// This code is generated. DO NOT edit by hand
+
+class HomeViewStrings {
+  static String title = 'HomeView.title';
+  static String subtitle = 'HomeView.subtitle';
+}
+```
+
+This can be accessed statically throughout the application where the keys are required. To see a full example of using stacked_localisaion you can check out the walkthrough [here](https://github.com/FilledStacks/stacked/tree/master/packages/stacked_localisation/stacked_localisation).
+
+## Contributing
+
+To run all generator tests:
+
+```sh
+flutter pub run build_runner test
+```
